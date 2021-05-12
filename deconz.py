@@ -8,8 +8,8 @@ _gauges = {
   "temperature": Gauge("deconz_sensor_temperature", "Temperature of sensor in Celsius", ["manufacturer", "model", "name", "type", "uid"]),
 };
 
-def _extract_metric(metric, metricName, devider):
-    value = float(metric['state'][metricName])/devider;
+def _extract_metric(metric, metricName, divider):
+    value = float(metric['state'][metricName])/divider;
 
     _gauges[metricName].labels(
       manufacturer = metric['manufacturername'], 
