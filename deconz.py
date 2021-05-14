@@ -26,7 +26,6 @@ def _extract_basic_metric(metric, metricName, divider):
       uid=metric['uniqueid'],
     ).set(value);
     
-
 def extract_metrics(logger, request_content):
   data = json.loads(request_content.decode('utf-8'));
   _extract_battery(data);
@@ -38,10 +37,6 @@ def extract_metrics(logger, request_content):
       _functionMap[metric['type']](metric);
     else:
       logger.info(f"Unknow metric type \"{metric['type']}\".");
-
-    
-
-
 
 def _extract_battery(data):
   processed = set();
@@ -60,5 +55,4 @@ def _extract_battery(data):
       value = int(config['battery']);
     
     _gauges['battery'].labels(manufacturer = metric['manufacturername'], model=metric['modelid'], name=metric['name']).set(value);
-
 
