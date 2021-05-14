@@ -8,7 +8,14 @@ _gauges = {
   "temperature": Gauge("deconz_sensor_temperature", "Temperature of sensor in Celsius", ["manufacturer", "model", "name", "type", "uid"]),
 };
 
-def _extract_metric(metric, metricName, divider):
+_functionMap = {
+  'ZHAHumidity': lambda x: _extract_basic_metric(x, 'humidity', 100),
+  'ZHATemperature': lambda x: _extract_basic_metric(x, 'temperature', 100),
+  'ZHAPressure': lambda x: _extract_basic_metric(x, 'pressure', 1),
+};
+
+
+def _extract_basic_metric(metric, metricName, divider):
     value = float(metric['state'][metricName])/divider;
 
     _gauges[metricName].labels(
@@ -21,19 +28,18 @@ def _extract_metric(metric, metricName, divider):
     
 
 def extract_metrics(logger, request_content):
-  metric_result = {};
   data = json.loads(request_content.decode('utf-8'));
   _extract_battery(data);
 
   for key in data:
     metric = data[key];
+    
+    if metric['type'] in _functionMap:
+      _functionMap[metric['type']](metric);
+    else:
+      logger.info(f"Unknow metric type \"{metric['type']}\".");
 
-    if metric['type'] == 'ZHAHumidity':
-      _extract_metric(metric, 'humidity', 100);
-    elif metric['type'] == 'ZHATemperature':
-      _extract_metric(metric, 'temperature', 100);
-    elif metric['type'] == 'ZHAPressure':
-      _extract_metric(metric, 'pressure', 1);
+    
 
 
 
