@@ -2,6 +2,8 @@
 
 A super simple and dirty prometheus exporter for deconz.
 
+Currently only exports battery and Zigbee humidity, temperature and pressure.
+
 ```
 Enviroment variables used to configure the exporter.
 HOST_PORT       Sets port to expose the prometheus metrics on. default to 80  
