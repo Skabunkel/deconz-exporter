@@ -81,7 +81,7 @@ if __name__ == '__main__':
       logger.error(f"Request did not result in a successful status, {response.status} {response.reason}.");
 
     sleepTime = 0.0;
-    while  config['timeout'] > sleepTime & runnig:
+    while (config['timeout'] > sleepTime) & runnig:
       time.sleep(0.1);
       sleepTime += 0.1;
 
