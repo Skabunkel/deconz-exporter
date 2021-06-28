@@ -3,6 +3,7 @@ FROM python:3-alpine
 RUN find / -perm +6000 -type f -exec chmod a-s {} \; || true
 
 RUN pip3 install prometheus-client
+RUN apk add --update tini
 RUN adduser --no-create-home -D -s /sbin/nologin export-user
 
 WORKDIR /srv/deconz-exporter
@@ -21,4 +22,5 @@ ENV UPDATE_INTERVAL 10.0
 #HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
 
 USER export-user
-ENTRYPOINT [ "python3", "main.py" ]
+ENTRYPOINT [ "tini", "--" ]
+CMD [ "python3", "/srv/deconz-exporter/main.py" ]

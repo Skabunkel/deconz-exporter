@@ -6,6 +6,7 @@ import sys
 import os
 import deconz;
 import signal;
+from threading import Event
 
 """
 Enviroment variable lables used to read values from.
@@ -21,10 +22,10 @@ URL_LABLE = 'DECONZ_URL';
 TOKEN_LABLE = 'DECONZ_TOKEN';
 TIMEOUT_LABLE = 'UPDATE_INTERVAL';
 
-runnig = True;
+exit = Event();
 
 def signalShuttdown(self, *args):
-  runnig = False;
+  exit.set();
 
 config = {
   'target_port': 80,
@@ -69,8 +70,11 @@ if __name__ == '__main__':
   path = "/api/{}/sensors".format(config['token']);
 
   signal.signal(signal.SIGTERM, signalShuttdown);
+  signal.signal(signal.SIGHUP, signalShuttdown);
+  signal.signal(signal.SIGINT, signalShuttdown);
+  signal.signal(signal.SIGABRT, signalShuttdown);
 
-  while runnig:
+  while not exit.is_set():
     connection.request("GET", path);
     response = connection.getresponse();
 
@@ -81,7 +85,8 @@ if __name__ == '__main__':
       logger.error(f"Request did not result in a successful status, {response.status} {response.reason}.");
 
     sleepTime = 0.0;
-    while (config['timeout'] > sleepTime) & runnig:
+
+    while (config['timeout'] > sleepTime) and not exit.is_set():
       time.sleep(0.1);
       sleepTime += 0.1;
 
