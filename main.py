@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
   if not config['token']:
     logger.error(f"No deconz token provided.");
-    exit(1);
+    sys.exit(1);
 
   start_http_server(config['host_port']);
   connection = client.HTTPConnection(config['url'], config['target_port']);
