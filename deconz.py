@@ -6,12 +6,18 @@ _gauges = {
   "humidity": Gauge("deconz_sensor_humidity", "Humidity of sensor in percent", ["manufacturer", "model", "name", "type", "uid"]),
   "pressure": Gauge("deconz_sensor_pressure", "Air pressure in hectopascal (hPa)", ["manufacturer", "model", "name", "type", "uid"]),
   "temperature": Gauge("deconz_sensor_temperature", "Temperature of sensor in Celsius", ["manufacturer", "model", "name", "type", "uid"]),
+  "open": Gauge("deconz_sensor_contact", "Contact Sensor", ["manufacturer", "model", "name", "type", "uid"]),
+  "presence": Gauge("deconz_sensor_motion", "Motion Sensor", ["manufacturer", "model", "name", "type", "uid"]),
+  "lux": Gauge("deconz_sensor_lux", "Light Sensor", ["manufacturer", "model", "name", "type", "uid"]),
 };
 
 _functionMap = {
   'ZHAHumidity': lambda x: _extract_basic_metric(x, 'humidity', 100),
   'ZHATemperature': lambda x: _extract_basic_metric(x, 'temperature', 100),
   'ZHAPressure': lambda x: _extract_basic_metric(x, 'pressure', 1),
+  'ZHAOpenClose': lambda x: _extract_basic_metric(x, 'open', 1),
+  'ZHAPresence': lambda x: _extract_basic_metric(x, 'presence', 1),
+  'ZHALightLevel': lambda x: _extract_basic_metric(x, 'lux', 1),
 };
 
 
@@ -36,7 +42,7 @@ def extract_metrics(logger, request_content):
     if metric['type'] in _functionMap:
       _functionMap[metric['type']](metric);
     else:
-      logger.info(f"Unknow metric type \"{metric['type']}\".");
+      logger.info(f"Unknown metric type \"{metric['type']}\".");
 
 def _extract_battery(data):
   processed = set();
