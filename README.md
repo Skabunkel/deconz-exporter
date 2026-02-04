@@ -1,3 +1,5 @@
+# ARCHIVED
+
 # deconz-exporter
 
 A super simple and dirty prometheus exporter for deconz.
